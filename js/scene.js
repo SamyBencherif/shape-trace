@@ -72,7 +72,7 @@ function randomColor() {
 }
 function whatsnew(reporter) {
     var request = new XMLHttpRequest();
-    request.open('GET', '/whatsnew.txt', true);
+    request.open('GET', 'shape-trace/whatsnew.txt', true);
     request.onload = function () {
         if (request.status >= 200 && request.status < 400) {
             var resp = request.responseText;
@@ -89,7 +89,7 @@ function whatsnew(reporter) {
 }
 function saveVersion(setter) {
     var request = new XMLHttpRequest();
-    request.open('GET', '/version.txt', true);
+    request.open('GET', '/shape-trace/version.txt', true);
     request.onload = function () {
         if (request.status >= 200 && request.status < 400) {
             var resp = request.responseText;
