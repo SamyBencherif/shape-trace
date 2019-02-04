@@ -142,7 +142,7 @@ function randomColor() {
 }
 function whatsnew(reporter) {
     var request = new XMLHttpRequest();
-    request.open('GET', '/shape-trace/whatsnew.txt', true);
+    request.open('GET', 'whatsnew.txt', true);
     request.onload = function () {
         if (request.status >= 200 && request.status < 400) {
             var resp = request.responseText;
@@ -159,7 +159,7 @@ function whatsnew(reporter) {
 }
 function saveVersion(setter) {
     var request = new XMLHttpRequest();
-    request.open('GET', '/shape-trace/version.txt', true);
+    request.open('GET', 'version.txt', true);
     request.onload = function () {
         if (request.status >= 200 && request.status < 400) {
             var resp = request.responseText;
@@ -331,12 +331,13 @@ var MyScene = {
         }
     },
     mousedown: function (ev) {
-        if (ev.target == this.overlay)
+        if (ev.target == this.overlay) {
+            this.shape.push({ x: undefined, y: undefined });
             if (color == "black") {
-                if (this.shape.length == 0)
-                    this.shape.push({ x: ev.offsetX, y: ev.offsetY });
+                this.shape.push({ x: ev.offsetX, y: ev.offsetY });
                 this.shape.push({ x: ev.offsetX, y: ev.offsetY });
             }
+        }
     },
     mousemove: function (ev) {
         if (ev.target == this.overlay)
