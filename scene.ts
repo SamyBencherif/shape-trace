@@ -157,7 +157,9 @@ let MyScene: tsg.Scene = {
         if (this.checkUpdateClock > 5) {
 
             if (this.latest != this.current) {
-                alert("A new version is available! Reload to update.");
+                if (confirm("A new version is available! Continue to update.")) {
+                    location.reload(true);
+                }
                 this.checkUpdateClock = undefined; //decommission
                 console.log("update deferred.")
             } else {
