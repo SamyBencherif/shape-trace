@@ -93,9 +93,43 @@ function I(a, b, i) {
     return a + (b - a) * i
 }
 
+function saveVersion(setter) {
+    var request = new XMLHttpRequest();
+    request.open('GET', '/version.txt', true);
+
+    request.onload = function () {
+        if (request.status >= 200 && request.status < 400) {
+            // Success!
+            var resp = request.responseText;
+
+            setter(resp)
+        } else {
+            // We reached our target server, but it returned an error
+            setter("unknown")
+        }
+    };
+
+    request.onerror = function () {
+        // There was a connection error of some sort
+        setter("unknown")
+    };
+
+    request.send();
+}
+
 let MyScene: tsg.Scene = {
 
     setup: function () {
+
+        this.current = "unknown";
+        this.latest = "unknown";
+
+        this.checkUpdateClock = 0;
+
+        saveVersion((v) => this.current = v);
+        saveVersion((v) => this.latest = v);
+        saveVersion((v) => console.log("Running Version " + v));
+
         this.shape = [];
 
         for (var s = 0; s < sides; s++)
@@ -116,6 +150,23 @@ let MyScene: tsg.Scene = {
     },
 
     update: function (ctx: CanvasRenderingContext2D, time: tsg.Time, size: tsg.Size): void {
+
+        if (this.checkUpdateClock != undefined)
+            this.checkUpdateClock += time.delta;
+
+        if (this.checkUpdateClock > 5) {
+
+            if (this.latest != this.current) {
+                alert("A new version is available! Reload to update.");
+                this.checkUpdateClock = undefined; //decommission
+                console.log("update deferred.")
+            } else {
+                this.checkUpdateClock = 0;
+            }
+
+            saveVersion((v) => this.latest = v);
+        }
+
         ctx.clearRect(0, 0, size.width, size.height);
         ctx.strokeStyle = "lightGray";
 
@@ -157,9 +208,8 @@ let MyScene: tsg.Scene = {
                 point.y
             );
 
-            if (color == "black")
-            {
-                ctx.fillRect(point.x-2, point.y-2, 4,4);
+            if (color == "black") {
+                ctx.fillRect(point.x - 2, point.y - 2, 4, 4);
             }
         }
         ctx.stroke();

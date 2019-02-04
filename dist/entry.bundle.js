@@ -136,8 +136,32 @@ function raycast(origin, direction, shape) {
 function I(a, b, i) {
     return a + (b - a) * i;
 }
+function saveVersion(setter) {
+    var request = new XMLHttpRequest();
+    request.open('GET', '/version.txt', true);
+    request.onload = function () {
+        if (request.status >= 200 && request.status < 400) {
+            var resp = request.responseText;
+            setter(resp);
+        }
+        else {
+            setter("unknown");
+        }
+    };
+    request.onerror = function () {
+        setter("unknown");
+    };
+    request.send();
+}
 var MyScene = {
     setup: function () {
+        var _this = this;
+        this.current = "unknown";
+        this.latest = "unknown";
+        this.checkUpdateClock = 0;
+        saveVersion(function (v) { return _this.current = v; });
+        saveVersion(function (v) { return _this.latest = v; });
+        saveVersion(function (v) { return console.log("Running Version " + v); });
         this.shape = [];
         for (var s = 0; s < sides; s++)
             for (var i = 0; i < 1; i += sides / res) {
@@ -153,6 +177,20 @@ var MyScene = {
         this.curves = [];
     },
     update: function (ctx, time, size) {
+        var _this = this;
+        if (this.checkUpdateClock != undefined)
+            this.checkUpdateClock += time.delta;
+        if (this.checkUpdateClock > 5) {
+            if (this.latest != this.current) {
+                alert("A new version is available! Reload to update.");
+                this.checkUpdateClock = undefined;
+                console.log("update deferred.");
+            }
+            else {
+                this.checkUpdateClock = 0;
+            }
+            saveVersion(function (v) { return _this.latest = v; });
+        }
         ctx.clearRect(0, 0, size.width, size.height);
         ctx.strokeStyle = "lightGray";
         ctx.beginPath();
