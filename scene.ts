@@ -100,7 +100,7 @@ function randomColor() {
 
 function whatsnew(reporter) {
     var request = new XMLHttpRequest();
-    request.open('GET', 'shape-trace/whatsnew.txt', true);
+    request.open('GET', '/shape-trace/whatsnew.txt', true);
 
     request.onload = function () {
         if (request.status >= 200 && request.status < 400) {
