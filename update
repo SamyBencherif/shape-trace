@@ -1,0 +1,23 @@
+#!/usr/bin/python
+
+commit = raw_input("commit message: ")
+
+change = raw_input("major/minor/tweak: ")
+
+V = open("version.txt").read().split('.')
+
+if (change == "major"):
+	V[0] = str(int(V[0])+1)
+
+if (change == "minor"):
+	V[1] = str(int(V[1])+1)
+
+if (change == "tweak"):
+	V[2] = str(int(V[2])+1)
+
+open("version.txt", "w+t").write('.'.join(V))
+
+import subprocess
+
+subprocess.call("git add *", shell=1)
+subprocess.call("git commit -m \"" + commit + "\"", shell=1)
