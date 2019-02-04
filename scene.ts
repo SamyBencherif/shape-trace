@@ -93,6 +93,11 @@ function I(a, b, i) {
     return a + (b - a) * i
 }
 
+function randomColor() {
+    var colors = ["red", "green", "blue", '#9f8170', '#af4035', '#e2062c', '#ca2c92', '#93ccea', '#d4af37', '#b5651d', '255', '#fbaed2', '#ff6e4a', '#f0f8ff', '#0ff', '#fff600', '#465945', '#915f6d'];
+    return colors[Math.floor(colors.length * Math.random())];
+}
+
 function whatsnew(reporter) {
     var request = new XMLHttpRequest();
     request.open('GET', '/whatsnew.txt', true);
@@ -143,18 +148,7 @@ function saveVersion(setter) {
 
 let MyScene: tsg.Scene = {
 
-    setup: function () {
-
-        this.current = "unknown";
-        this.latest = "unknown";
-
-        this.checkUpdateClock = 0;
-
-        saveVersion((v) => this.current = v);
-        saveVersion((v) => this.latest = v);
-        saveVersion((v) => console.log("Running Version " + v));
-
-        this.shape = [];
+    buildShape: function () {
 
         for (var s = 0; s < sides; s++)
             for (var i = 0; i < 1; i += sides / res) {
@@ -170,7 +164,30 @@ let MyScene: tsg.Scene = {
                 )
             }
 
+        this.shape.push(
+            {
+                x: undefined,
+                y: undefined
+            }
+        )
+
         this.curves = [];
+    },
+
+    setup: function () {
+
+        this.current = "unknown";
+        this.latest = "unknown";
+
+        this.checkUpdateClock = 0;
+
+        saveVersion((v) => this.current = v);
+        saveVersion((v) => this.latest = v);
+        saveVersion((v) => console.log("Running Version " + v));
+
+        this.shape = [];
+
+        this.buildShape();
     },
 
     update: function (ctx: CanvasRenderingContext2D, time: tsg.Time, size: tsg.Size): void {
@@ -180,7 +197,7 @@ let MyScene: tsg.Scene = {
 
         if (this.checkUpdateClock > 5) {
 
-            if (this.latest != this.current) {
+            if (this.latest != this.current && this.latest != "unknown" && this.current != "unknown") {
 
                 whatsnew((function (info) {
                     if (confirm("A new version is available! Continue to update." + (info ? "\n\n Whats New: \n" + info : ""))) {
@@ -353,22 +370,25 @@ let MyScene: tsg.Scene = {
 
     mousedown: function (ev: MouseEvent) {
         // this.shape.push({ x: undefined, y: undefined });
-        if (color == "black") {
-            if (this.shape.length == 0)
+        if (ev.target == this.overlay)
+            if (color == "black") {
+                if (this.shape.length == 0)
+                    this.shape.push({ x: ev.offsetX, y: ev.offsetY });
                 this.shape.push({ x: ev.offsetX, y: ev.offsetY });
-            this.shape.push({ x: ev.offsetX, y: ev.offsetY });
-        }
+            }
 
     },
     mousemove: function (ev: MouseEvent) {
-        if (color == "black")
+        if (ev.target == this.overlay)
+            if (color == "black")
 
-            if (ev.buttons) {
-                this.shape[this.shape.length - 1] = { x: ev.offsetX, y: ev.offsetY };
-            }
+                if (ev.buttons) {
+                    this.shape[this.shape.length - 1] = { x: ev.offsetX, y: ev.offsetY };
+                }
     },
 
     overlayUI: function (dom: HTMLElement) {
+        this.overlay = dom;
     },
 
     button: function (text, action) {
@@ -379,6 +399,36 @@ let MyScene: tsg.Scene = {
         btn.classList = "btn btn-light";
         btn.style.margin = "5px";
         this.dom.appendChild(btn);
+    },
+
+    dataBlock: function (properties, callback) {
+        var block = document.createElement("div");
+        block.classList = "card"
+        block.style.width = "300px";
+        block.style.margin = "5px";
+
+        for (var prop of properties) {
+            var p = document.createElement("span");
+            p.innerText = prop;
+            var i = document.createElement("input");
+            block.appendChild(p);
+            block.appendChild(i);
+            i.id = "input_" + prop
+        }
+
+        var submit = document.createElement("input");
+        submit.type = "button"
+        submit.value = "add shape";
+        block.appendChild(submit);
+        submit.onclick = (function (ev) {
+            var data = [];
+            for (var prop of properties) {
+                data.push(block.querySelector('#input_' + prop).value);
+            }
+            callback.bind(this)(data);
+        }).bind(this)
+
+        document.body.appendChild(block);
     },
 
     ui: function (dom: HTMLElement) {
@@ -393,7 +443,8 @@ let MyScene: tsg.Scene = {
             x_offset = 10; //Math.PI / 4;
             color = "purple";
             sec_per_rev = 3;
-            this.setup();
+            this.shape = [];
+            this.buildShape();
         }).bind(this));
 
         // slant (pink)
@@ -405,7 +456,8 @@ let MyScene: tsg.Scene = {
             x_offset = 10; //Math.PI / 4;
             color = "pink";
             sec_per_rev = 3;
-            this.setup();
+            this.shape = [];
+            this.buildShape();
         }).bind(this));
 
         // triangle (orange)
@@ -417,7 +469,8 @@ let MyScene: tsg.Scene = {
             x_offset = 0; //Math.PI / 4;
             color = "orange";
             sec_per_rev = 3;
-            this.setup();
+            this.shape = [];
+            this.buildShape();
         }).bind(this));
 
         // square (blue)
@@ -429,7 +482,8 @@ let MyScene: tsg.Scene = {
             x_offset = 0;
             color = "blue";
             sec_per_rev = 3;
-            this.setup();
+            this.shape = [];
+            this.buildShape();
         }).bind(this));
 
         // hexagon (green)
@@ -441,7 +495,8 @@ let MyScene: tsg.Scene = {
             x_offset = 0; //Math.PI / 4;
             color = "green";
             sec_per_rev = 3;
-            this.setup();
+            this.shape = [];
+            this.buildShape();
         }).bind(this));
 
         // circle (red)
@@ -453,7 +508,8 @@ let MyScene: tsg.Scene = {
             x_offset = 0; //Math.PI / 4;
             color = "red";
             sec_per_rev = 3;
-            this.setup();
+            this.shape = [];
+            this.buildShape();
         }).bind(this));
 
         this.button("clear", (function () {
@@ -464,8 +520,18 @@ let MyScene: tsg.Scene = {
             x_offset = -100; //Math.PI / 4;
             color = "black";
             sec_per_rev = 3;
-            this.setup();
+            this.shape = [];
+            this.buildShape();
         }).bind(this));
+
+        this.dataBlock(["sides", "radius", "rotation", "shift"], function (data) {
+            sides = parseInt(data[0]);
+            radius = parseInt(data[1]);
+            rot_offset = Math.PI / 180 * parseInt(data[2]);
+            x_offset = parseInt(data[3]);
+            color = randomColor();
+            this.buildShape();
+        })
 
     }
 

@@ -66,6 +66,10 @@ function raycast(origin, direction, shape) {
 function I(a, b, i) {
     return a + (b - a) * i;
 }
+function randomColor() {
+    var colors = ["red", "green", "blue", '#9f8170', '#af4035', '#e2062c', '#ca2c92', '#93ccea', '#d4af37', '#b5651d', '255', '#fbaed2', '#ff6e4a', '#f0f8ff', '#0ff', '#fff600', '#465945', '#915f6d'];
+    return colors[Math.floor(colors.length * Math.random())];
+}
 function whatsnew(reporter) {
     var request = new XMLHttpRequest();
     request.open('GET', '/whatsnew.txt', true);
@@ -101,15 +105,7 @@ function saveVersion(setter) {
     request.send();
 }
 var MyScene = {
-    setup: function () {
-        var _this = this;
-        this.current = "unknown";
-        this.latest = "unknown";
-        this.checkUpdateClock = 0;
-        saveVersion(function (v) { return _this.current = v; });
-        saveVersion(function (v) { return _this.latest = v; });
-        saveVersion(function (v) { return console.log("Running Version " + v); });
-        this.shape = [];
+    buildShape: function () {
         for (var s = 0; s < sides; s++)
             for (var i = 0; i < 1; i += sides / res) {
                 var sx = 100 + radius * Math.cos(rot_offset - s / sides * 2 * Math.PI);
@@ -121,14 +117,29 @@ var MyScene = {
                     y: I(sy, ey, i)
                 });
             }
+        this.shape.push({
+            x: undefined,
+            y: undefined
+        });
         this.curves = [];
+    },
+    setup: function () {
+        var _this = this;
+        this.current = "unknown";
+        this.latest = "unknown";
+        this.checkUpdateClock = 0;
+        saveVersion(function (v) { return _this.current = v; });
+        saveVersion(function (v) { return _this.latest = v; });
+        saveVersion(function (v) { return console.log("Running Version " + v); });
+        this.shape = [];
+        this.buildShape();
     },
     update: function (ctx, time, size) {
         var _this = this;
         if (this.checkUpdateClock != undefined)
             this.checkUpdateClock += time.delta;
         if (this.checkUpdateClock > 5) {
-            if (this.latest != this.current) {
+            if (this.latest != this.current && this.latest != "unknown" && this.current != "unknown") {
                 whatsnew((function (info) {
                     if (confirm("A new version is available! Continue to update." + (info ? "\n\n Whats New: \n" + info : ""))) {
                         location.reload(true);
@@ -249,19 +260,22 @@ var MyScene = {
         }
     },
     mousedown: function (ev) {
-        if (color == "black") {
-            if (this.shape.length == 0)
+        if (ev.target == this.overlay)
+            if (color == "black") {
+                if (this.shape.length == 0)
+                    this.shape.push({ x: ev.offsetX, y: ev.offsetY });
                 this.shape.push({ x: ev.offsetX, y: ev.offsetY });
-            this.shape.push({ x: ev.offsetX, y: ev.offsetY });
-        }
-    },
-    mousemove: function (ev) {
-        if (color == "black")
-            if (ev.buttons) {
-                this.shape[this.shape.length - 1] = { x: ev.offsetX, y: ev.offsetY };
             }
     },
+    mousemove: function (ev) {
+        if (ev.target == this.overlay)
+            if (color == "black")
+                if (ev.buttons) {
+                    this.shape[this.shape.length - 1] = { x: ev.offsetX, y: ev.offsetY };
+                }
+    },
     overlayUI: function (dom) {
+        this.overlay = dom;
     },
     button: function (text, action) {
         var btn = document.createElement("button");
@@ -271,6 +285,34 @@ var MyScene = {
         btn.classList = "btn btn-light";
         btn.style.margin = "5px";
         this.dom.appendChild(btn);
+    },
+    dataBlock: function (properties, callback) {
+        var block = document.createElement("div");
+        block.classList = "card";
+        block.style.width = "300px";
+        block.style.margin = "5px";
+        for (var _i = 0, properties_1 = properties; _i < properties_1.length; _i++) {
+            var prop = properties_1[_i];
+            var p = document.createElement("span");
+            p.innerText = prop;
+            var i = document.createElement("input");
+            block.appendChild(p);
+            block.appendChild(i);
+            i.id = "input_" + prop;
+        }
+        var submit = document.createElement("input");
+        submit.type = "button";
+        submit.value = "add shape";
+        block.appendChild(submit);
+        submit.onclick = (function (ev) {
+            var data = [];
+            for (var _i = 0, properties_2 = properties; _i < properties_2.length; _i++) {
+                var prop = properties_2[_i];
+                data.push(block.querySelector('#input_' + prop).value);
+            }
+            callback.bind(this)(data);
+        }).bind(this);
+        document.body.appendChild(block);
     },
     ui: function (dom) {
         this.dom = dom;
@@ -282,7 +324,8 @@ var MyScene = {
             x_offset = 10;
             color = "purple";
             sec_per_rev = 3;
-            this.setup();
+            this.shape = [];
+            this.buildShape();
         }).bind(this));
         this.button("&#x2571;", (function () {
             res = 500;
@@ -292,7 +335,8 @@ var MyScene = {
             x_offset = 10;
             color = "pink";
             sec_per_rev = 3;
-            this.setup();
+            this.shape = [];
+            this.buildShape();
         }).bind(this));
         this.button("&#x25b3;", (function () {
             res = 500;
@@ -302,7 +346,8 @@ var MyScene = {
             x_offset = 0;
             color = "orange";
             sec_per_rev = 3;
-            this.setup();
+            this.shape = [];
+            this.buildShape();
         }).bind(this));
         this.button("&#8414;", (function () {
             res = 500;
@@ -312,7 +357,8 @@ var MyScene = {
             x_offset = 0;
             color = "blue";
             sec_per_rev = 3;
-            this.setup();
+            this.shape = [];
+            this.buildShape();
         }).bind(this));
         this.button("&#x2b21;", (function () {
             res = 500;
@@ -322,7 +368,8 @@ var MyScene = {
             x_offset = 0;
             color = "green";
             sec_per_rev = 3;
-            this.setup();
+            this.shape = [];
+            this.buildShape();
         }).bind(this));
         this.button("&#9711;", (function () {
             res = 500;
@@ -332,7 +379,8 @@ var MyScene = {
             x_offset = 0;
             color = "red";
             sec_per_rev = 3;
-            this.setup();
+            this.shape = [];
+            this.buildShape();
         }).bind(this));
         this.button("clear", (function () {
             res = 500;
@@ -342,8 +390,17 @@ var MyScene = {
             x_offset = -100;
             color = "black";
             sec_per_rev = 3;
-            this.setup();
+            this.shape = [];
+            this.buildShape();
         }).bind(this));
+        this.dataBlock(["sides", "radius", "rotation", "shift"], function (data) {
+            sides = parseInt(data[0]);
+            radius = parseInt(data[1]);
+            rot_offset = Math.PI / 180 * parseInt(data[2]);
+            x_offset = parseInt(data[3]);
+            color = randomColor();
+            this.buildShape();
+        });
     }
 };
 tsg.run(MyScene, { w: 0, h: 200 }, 2.4);
