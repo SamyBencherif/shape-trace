@@ -88,8 +88,6 @@ function raycast(origin, direction, shape) {
     return out;
 };
 
-}
-
 // linear interpolate
 function I(a, b, i) {
     return a + (b - a) * i
@@ -276,7 +274,7 @@ let MyScene: tsg.Scene = {
         if (ev.buttons) {
             this.shape.push({ x: ev.offsetX, y: ev.offsetY });
         }
-    }
+    },
 
     overlayUI: function (dom: HTMLElement) {
     },
@@ -289,7 +287,7 @@ let MyScene: tsg.Scene = {
         btn.classList = "btn btn-light";
         btn.style.margin = "5px";
         this.dom.appendChild(btn);
-    }
+    },
 
     ui: function (dom: HTMLElement) {
         this.dom = dom;
@@ -378,6 +376,7 @@ let MyScene: tsg.Scene = {
         }).bind(this));
 
     }
+
 }
 
 tsg.run(MyScene, { w: 0, h: 200 }, 2.4);

@@ -5,14 +5,32 @@
 		canvas {
 			margin: 5px;
 		}
+
+		.button-bar {
+			position: absolute;
+			bottom: 0px;
+			left: 5px;
+		}
+
+		body {
+			overflow: hidden;
+		}
 	</style>
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
 		integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
-
+	<script async defer src="https://buttons.github.io/buttons.js"></script>
 </head>
 
 <body>
 	<script src="dist/entry.bundle.js"></script>
+
+	<div class="button-bar">
+
+		<a class="github-button" href="https://github.com/ntkme/github-buttons/fork" data-icon="octicon-repo-forked"
+			aria-label="Fork ntkme/github-buttons on GitHub">Fork</a>
+		<a class="github-button" href="https://github.com/SamyBencherif/shape-trace/issues"
+			data-icon="octicon-issue-opened" aria-label="Issue SamyBencherif/shape-trace on GitHub">Issue</a>
+	</div>
 </body>
 
 </html>

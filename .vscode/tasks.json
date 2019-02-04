@@ -1,0 +1,30 @@
+{
+	// See https://go.microsoft.com/fwlink/?LinkId=733558
+	// for the documentation about the tasks.json format
+	"version": "2.0.0",
+	"tasks": [{
+			"label": "tsc watch",
+			"type": "shell",
+			"command": "tsc --watch",
+			"problemMatcher": []
+		},
+		{
+			"label": "webpack watch",
+			"type": "shell",
+			"command": "webpack --watch",
+			"problemMatcher": []
+		},
+		{
+			"label": "webserver",
+			"type": "shell",
+			"command": "ws",
+			"problemMatcher": []
+		},
+		{
+			"label": "chrome watch",
+			"type": "shell",
+			"command": "chromewatch .",
+			"problemMatcher": []
+		}
+	]
+}
