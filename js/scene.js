@@ -116,6 +116,9 @@ var MyScene = {
                 continue;
             }
             ctx.lineTo(point.x, point.y);
+            if (color == "black") {
+                ctx.fillRect(point.x - 2, point.y - 2, 4, 4);
+            }
         }
         ctx.stroke();
         ctx.beginPath();
@@ -187,12 +190,17 @@ var MyScene = {
         }
     },
     mousedown: function (ev) {
-        this.shape.push({ x: undefined, y: undefined });
-    },
-    mousemove: function (ev) {
-        if (ev.buttons) {
+        if (color == "black") {
+            if (this.shape.length == 0)
+                this.shape.push({ x: ev.offsetX, y: ev.offsetY });
             this.shape.push({ x: ev.offsetX, y: ev.offsetY });
         }
+    },
+    mousemove: function (ev) {
+        if (color == "black")
+            if (ev.buttons) {
+                this.shape[this.shape.length - 1] = { x: ev.offsetX, y: ev.offsetY };
+            }
     },
     overlayUI: function (dom) {
     },
