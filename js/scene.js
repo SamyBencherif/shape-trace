@@ -141,8 +141,9 @@ var MyScene = {
         if (this.checkUpdateClock > 5) {
             if (this.latest != this.current && this.latest != "unknown" && this.current != "unknown") {
                 whatsnew((function (info) {
-                    if (confirm("A new version is available! Continue to update." + (info ? "\n\n Whats New: \n" + info : ""))) {
+                    if (confirm("A new version is available! Continue to update." + (info ? "\n\nWhats New: \n" + info : ""))) {
                         location.reload(true);
+                        return;
                     }
                     this.checkUpdateClock = undefined;
                     console.log("update deferred.");

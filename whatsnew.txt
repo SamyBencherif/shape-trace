@@ -1,1 +1,1 @@
-Added polygon addition tool.
+bug fix
