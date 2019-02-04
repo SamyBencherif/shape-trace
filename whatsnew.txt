@@ -1,1 +1,1 @@
-Draw line segments are kept seperated now.
+scan line is gray now. Very important update.

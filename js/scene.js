@@ -199,7 +199,8 @@ var MyScene = {
         var sy = 100 + radius * Math.sin(rot_offset - Math.floor(sides * time.elapsed / 3) / sides * 2 * Math.PI);
         var ex = 100 + radius * Math.cos(rot_offset - Math.ceil(sides * time.elapsed / 3) / sides * 2 * Math.PI);
         var ey = 100 + radius * Math.sin(rot_offset - Math.ceil(sides * time.elapsed / 3) / sides * 2 * Math.PI);
-        ctx.strokeStyle = "red";
+        ctx.strokeStyle = "gray";
+        ctx.lineWidth = 1;
         ctx.beginPath();
         ctx.moveTo(100, 100);
         ctx.lineTo(100 + 120 * Math.cos(-time.elapsed * 2 * Math.PI / sec_per_rev), 100 + 120 * Math.sin(-time.elapsed * 2 * Math.PI / sec_per_rev));

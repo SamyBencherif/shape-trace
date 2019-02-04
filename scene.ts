@@ -282,7 +282,8 @@ let MyScene: tsg.Scene = {
         // var tx = this.shape[Math.round(res * time.elapsed / sec_per_rev) % this.shape.length].x;
         // var ty = this.shape[Math.round(res * time.elapsed / sec_per_rev) % this.shape.length].y;
 
-        ctx.strokeStyle = "red";
+        ctx.strokeStyle = "gray";
+        ctx.lineWidth = 1;
 
         ctx.beginPath();
         ctx.moveTo(100, 100);
