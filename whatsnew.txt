@@ -1,1 +1,1 @@
-Added a feature that tells you what's new in each version.
+commit messages to change log

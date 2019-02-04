@@ -16,6 +16,7 @@ if (change == "tweak"):
 	V[2] = str(int(V[2])+1)
 
 open("version.txt", "w+t").write('.'.join(V))
+open("whatsnew.txt", "w+t").write(commit)
 
 import subprocess
 
