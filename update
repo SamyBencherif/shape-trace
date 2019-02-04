@@ -2,7 +2,7 @@
 
 commit = raw_input("commit message: ")
 
-change = raw_input("major/minor/tweak: ")
+change = raw_input("major/minor/tweak/system: ")
 
 V = open("version.txt").read().split('.')
 
