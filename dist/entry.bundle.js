@@ -72,11 +72,11 @@
 exports.__esModule = true;
 var tsg = __webpack_require__(1);
 var res = 500;
-var sides = 4;
+var sides = 3;
 var radius = 80;
-var rot_offset = Math.PI / 2;
+var rot_offset = -1.5 * Math.PI / 3;
 var x_offset = 0;
-var color = "purple";
+var color = "orange";
 var sec_per_rev = 3;
 var min = Math.min;
 var max = Math.max;

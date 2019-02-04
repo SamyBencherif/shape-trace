@@ -3,12 +3,12 @@ import * as tsg from "./tsg";
 import { knownExtended } from "tar";
 
 var res = 500;
-var sides = 4;
+var sides = 3;
 var radius = 80;
-var rot_offset = Math.PI / 2; //Math.PI / 4;
+var rot_offset = -1.5 * Math.PI / 3;
 var x_offset = 0; //Math.PI / 4;
-var color = "purple";
-var sec_per_rev = 3
+var color = "orange";
+var sec_per_rev = 3;
 
 // some code ported from python
 
