@@ -213,7 +213,6 @@ var MyScene = {
                 whatsnew((function (info) {
                     if (confirm("A new version is available! Continue to update." + (info ? "\n\nWhats New: \n" + info : ""))) {
                         location.reload(true);
-                        return;
                     }
                     this.checkUpdateClock = undefined;
                     console.log("update deferred.");

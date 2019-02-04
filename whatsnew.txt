@@ -1,1 +1,1 @@
-scan line is gray now. Very important update.
+fix bug
