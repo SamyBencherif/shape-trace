@@ -93,6 +93,30 @@ function I(a, b, i) {
     return a + (b - a) * i
 }
 
+function whatsnew(reporter) {
+    var request = new XMLHttpRequest();
+    request.open('GET', '/whatsnew.txt', true);
+
+    request.onload = function () {
+        if (request.status >= 200 && request.status < 400) {
+            // Success!
+            var resp = request.responseText;
+
+            reporter(resp)
+        } else {
+            // We reached our target server, but it returned an error
+            reporter("")
+        }
+    };
+
+    request.onerror = function () {
+        // There was a connection error of some sort
+        reporter("")
+    };
+
+    request.send();
+}
+
 function saveVersion(setter) {
     var request = new XMLHttpRequest();
     request.open('GET', '/version.txt', true);
@@ -157,11 +181,14 @@ let MyScene: tsg.Scene = {
         if (this.checkUpdateClock > 5) {
 
             if (this.latest != this.current) {
-                if (confirm("A new version is available! Continue to update.")) {
-                    location.reload(true);
-                }
-                this.checkUpdateClock = undefined; //decommission
-                console.log("update deferred.")
+
+                whatsnew((function (info) {
+                    if (confirm("A new version is available! Continue to update." + (info ? "\n\n Whats New: \n" + info : ""))) {
+                        location.reload(true);
+                    }
+                    this.checkUpdateClock = undefined; //decommission
+                    console.log("update deferred.")
+                }).bind(this));
             } else {
                 this.checkUpdateClock = 0;
             }

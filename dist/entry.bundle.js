@@ -136,6 +136,23 @@ function raycast(origin, direction, shape) {
 function I(a, b, i) {
     return a + (b - a) * i;
 }
+function whatsnew(reporter) {
+    var request = new XMLHttpRequest();
+    request.open('GET', '/whatsnew.txt', true);
+    request.onload = function () {
+        if (request.status >= 200 && request.status < 400) {
+            var resp = request.responseText;
+            reporter(resp);
+        }
+        else {
+            reporter("");
+        }
+    };
+    request.onerror = function () {
+        reporter("");
+    };
+    request.send();
+}
 function saveVersion(setter) {
     var request = new XMLHttpRequest();
     request.open('GET', '/version.txt', true);
@@ -182,11 +199,13 @@ var MyScene = {
             this.checkUpdateClock += time.delta;
         if (this.checkUpdateClock > 5) {
             if (this.latest != this.current) {
-                if (confirm("A new version is available! Continue to update.")) {
-                    location.reload(true);
-                }
-                this.checkUpdateClock = undefined;
-                console.log("update deferred.");
+                whatsnew((function (info) {
+                    if (confirm("A new version is available! Continue to update." + (info ? "\n\n Whats New: \n" + info : ""))) {
+                        location.reload(true);
+                    }
+                    this.checkUpdateClock = undefined;
+                    console.log("update deferred.");
+                }).bind(this));
             }
             else {
                 this.checkUpdateClock = 0;
