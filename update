@@ -22,3 +22,4 @@ import subprocess
 
 subprocess.call("git add *", shell=1)
 subprocess.call("git commit -m \"" + commit + "\"", shell=1)
+subprocess.call("git push", shell=1)
