@@ -215,6 +215,7 @@ var MyScene = {
                         location.reload(true);
                     }
                     this.checkUpdateClock = undefined;
+                    return;
                     console.log("update deferred.");
                 }).bind(this));
             }

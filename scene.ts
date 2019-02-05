@@ -204,6 +204,7 @@ let MyScene: tsg.Scene = {
                         location.reload(true);
                     }
                     this.checkUpdateClock = undefined; //decommission
+                    return
                     console.log("update deferred.")
                 }).bind(this));
             } else {
